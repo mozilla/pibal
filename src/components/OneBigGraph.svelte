@@ -57,7 +57,7 @@
             y: d[y],
             color: schemeCategory10[j * config.y.length + i],
             label:
-              pt.length > 1 ? group : config.labels[i] || y + (group || ""),
+              pt.length > 1 ? group : config.labels[i] || group || "",
           };
         });
       })
@@ -130,7 +130,7 @@
       {#if config.supertitle}
         <div class="supertitle">{config.supertitle}</div>
       {/if}
-      <h1>{config.title}</h1>
+      <h1>{plot.title}</h1>
       {#if config.subtitle}
         <div class="subtitle">{config.subtitle}</div>
       {/if}
@@ -199,9 +199,6 @@
                 defaultValue="latest"
                 let:output>
                 {#if config.group || config.y.length > 1}
-                  <DateMarker x={output[0][1][config.x]}>
-                    {timeFormat('%b %d, %Y')(output[0][1][config.x])}
-                  </DateMarker>
                   <g
                     transform="translate({xScale(output[0][1][config.x])}, 0)" />
                   {#if !facet || (facet && mousePosition.body)}

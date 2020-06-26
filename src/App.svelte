@@ -7,16 +7,14 @@
   import Logo from "./components/Logo.svelte";
   import OneBigGraph from "./components/OneBigGraph.svelte";
   import Code from "./components/Code.svelte";
-  import { site, plots } from "../public/config";
+  import { site, plotTemplate } from "../public/config";
 
   let logo;
-
+  let fullData;
+  let currentData;
+  let currentPlot;
+  let plots = [];
   let isNav = false;
-  let currentPlot = plots[0];
-
-  function toSQL(source) {
-    return `${source.split(".").slice(0, -1).join(".")}.sql`;
-  }
 
   function setPlot(key) {
     const nextPlot = plots.find((plot) => plot.key === key);
@@ -28,17 +26,51 @@
     const { key } = params;
 
     setPlot(key);
+    currentData = updateData();
   }
 
-  page("/", oneBigGraph);
-  page("/:key", oneBigGraph);
-  page({ hashbang: true });
+  function updateData() {
+    let newData = fullData.filter(row => {
+      return row[plotTemplate["plotSplit"]] === currentPlot["relevantRows"] &&
+        row["comparison_to_control"] === "relative_uplift" &&
+        (row["parameter"] === "0.9" || !("parameter" in row));
+    });
+    return newData;
+  }
 
-  async function graphs(source) {
-    return Promise.all([
-      fetch(`data/${source}`).then((r) => r.json()),
-      fetch(`sql/${toSQL(source)}`).then((r) => r.text()),
-    ]);
+  async function initData() {
+    let source = "bug_1637316_message_aboutwelcome_pull_factor_reinforcement_76_rel_release_76_77_weekly.json";
+    fullData = await fetch(`data/${source}`).then((r) => r.json()).then((json) => applySplit(json));
+
+    page("/", oneBigGraph);
+    page("/:key", oneBigGraph);
+    page({ hashbang: true });
+  }
+
+  async function applySplit(jsonData) {
+    let plotSplitField = plotTemplate["plotSplit"];
+    let plotSplitSet = new Set();
+
+    // Create the list of plots (split by statistic)
+    // to show up on the left panel.
+    jsonData.forEach(dataRow => {
+      dataRow["window_index"] = parseInt(dataRow["window_index"]);
+      let statistic = dataRow[plotSplitField];
+      if (plotSplitSet.has(statistic)) {
+        return;
+      }
+
+      let plotTemplateCopy = Object.assign({}, plotTemplate);
+      plotTemplateCopy["relevantRows"] = statistic;
+      plotTemplateCopy["title"] = statistic;
+      plotTemplateCopy["subtitle"] = plotTemplateCopy["subtitle"].replace("<statistic>", statistic);
+      plotTemplateCopy["key"] = statistic;
+      plots.push(plotTemplateCopy);
+
+      plotSplitSet.add(statistic);
+    });
+    currentPlot = plots[0];
+    return jsonData;
   }
 </script>
 
@@ -46,6 +78,7 @@
   <title>{site.title || 'One Big Graph'}</title>
 </svelte:head>
 
+{#await initData() then currentData}
 <nav
   on:mouseover={() => {
     isNav = true;
@@ -92,12 +125,11 @@
 
   </div>
 </nav>
+{/await}
 <main>
   <Stack space={2}>
-    {#await graphs(currentPlot.source) then data}
-      <OneBigGraph data={data[0]} plot={currentPlot} />
-      <Code file={data[1]} />
-      <Code file={JSON.stringify(currentPlot, null, 2)} language="javascript" />
-    {/await}
+    {#if currentData}
+    <OneBigGraph data={currentData} plot={currentPlot} />
+    {/if}
   </Stack>
 </main>
