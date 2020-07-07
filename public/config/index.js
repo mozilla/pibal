@@ -18,8 +18,6 @@ export const plotTemplate = {
   facet: "metric",
   plotSplit: "statistic",
   relevantRows: "",
-  yMin: -0.2,
-  yMax: 0.2,
   yAxisFormat: ".2s",
   yMouseoverFormat: ".2s"
 };

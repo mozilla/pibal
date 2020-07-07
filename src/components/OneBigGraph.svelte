@@ -126,15 +126,6 @@
 
 <div in:fly={{ duration: 400, y: 5 }}>
   {#if data.length}
-    <header>
-      {#if config.supertitle}
-        <div class="supertitle">{config.supertitle}</div>
-      {/if}
-      <h1>{plot.title}</h1>
-      {#if config.subtitle}
-        <div class="subtitle">{config.subtitle}</div>
-      {/if}
-    </header>
     <div class="charts" class:faceted={config.facet !== undefined}>
       {#each groupBy(config.facet, data) as [facet, facetData]}
         <div>
@@ -153,8 +144,6 @@
             {top}
             xMin={config.xMin}
             xMax={config.xMax}
-            {yMin}
-            {yMax}
             bind:mousePosition
             {right}>
             <g slot="background">
