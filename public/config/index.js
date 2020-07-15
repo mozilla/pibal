@@ -1,5 +1,5 @@
 export const site = {
-  title: "Lunascope",
+  title: "Pibal",
   feedback: "@emtwo", // can be any string
 };
 
