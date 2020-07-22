@@ -1,6 +1,7 @@
 {
-  "name": "one-big-graph-template",
-  "version": "1.0.0",
+  "name": "pibal",
+  "license": "MPL-2.0",
+  "version": "0.0.0",
   "scripts": {
     "build": "rollup --config",
     "dev": "rollup --config --watch",
