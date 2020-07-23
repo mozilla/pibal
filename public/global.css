@@ -120,3 +120,34 @@ h6 {
   margin: 0;
   padding: 0;
 }
+
+.subtitle1 {
+  width: 837px;
+  height: 32px;
+
+  font-size: 24px;
+  line-height: 28px;
+  padding: 25px;
+}
+
+.custom_label, .label_large {
+  font-weight: bold;
+  padding-right: 5px;
+}
+
+.label_large, .text_large {
+  font-size: 18px;
+}
+
+.row {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  padding-left: 25px;
+  padding-bottom: 25px;
+}
+
+.row_left, .row_right {
+  width: 50%;
+  display: inherit;
+}

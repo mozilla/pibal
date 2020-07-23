@@ -50,7 +50,8 @@
         "status": experiment.status,
         "startDate": (new Date(experiment.start_date)).toDateString(),
         "endDate": (new Date(experiment.end_date)).toDateString(),
-        "population": experiment.population
+        "population": experiment.population,
+        "enrollmentPeriod": experiment.proposed_enrollment
       };
   }
 
@@ -97,6 +98,40 @@
   .body {
     padding-bottom: var(--space-8x);
     padding-left: calc(var(--space-1x) * 10);
+  }
+
+  .overview_box {
+    width: 100%;
+    background: #EAEAEA;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+  }
+
+  .highlights_box {
+    width: 100%;
+    padding-top: 25px;
+    background: #D8D0D0;
+    border-radius: 10px;
+  }
+
+  .inline_bold {
+    font-weight: bold;
+    display:inline;
+  }
+
+  .warning {
+    width: 100%;
+    height: 36px;
+    background: rgba(255, 255, 0, 0.62);
+    border: 1px solid #000000;
+    box-sizing: border-box;
+    backdrop-filter: blur(4px);
+    /* Note: backdrop-filter has minimal browser support */
+    border-radius: 10px;
+    text-align: center;
+    line-height: 36px;
+    font-weight: bold;
+    font-style: oblique;
   }
 </style>
 
@@ -165,6 +200,60 @@
       <header>
         <h1>"{currentExperiment.name}" Analysis Report</h1>
       </header>
+
+      <div class="overview_box">
+        <div class="subtitle1">
+          Overview
+        </div>
+        <div>
+          <div class="row">
+            <div class="row_left">
+              <div class="custom_label">Status:</div>{currentExperiment.status}
+            </div>
+            <div class="row_right">
+              <div class="custom_label">Start Date:</div>{currentExperiment.startDate}
+            </div>
+          </div>
+          <div class="row">
+            <div class="row_left">
+              <div class="custom_label">Enrollment Period:</div>{currentExperiment.enrollmentPeriod} days
+            </div>
+            <div class="row_right">
+              <div class="custom_label">End Date:</div>{currentExperiment.endDate}
+            </div>
+          </div>
+          <div class="row">
+            <div class="row_left">
+              <div class="custom_label">Population:</div>{currentExperiment.population}
+            </div>
+            <div class="row_right">
+              <div class="custom_label">Enrollment Health:</div>???
+            </div>
+          </div>
+
+          <div class="highlights_box">
+            <div class="row">
+                <div class="label_large">Hypothesis:</div><div class="text_large">This experiment is expected to <div class="inline_bold">???</div> with <div class="inline_bold">&lt;feature metric&gt;</div> for the treatment group.</div>
+            </div>
+            <div class="row">
+              <div class="row_left">
+                <div class="label_large">Result:</div>
+                {#if currentExperiment.status === "Live"}
+                <b class="text_large" style="color: yellow;">PENDING</b>
+                {:else}
+                <b class="text_large">???</b>
+                {/if}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {#if currentExperiment.status === "Live"}
+      <div class="warning">
+        EXPERIMENT RESULTS ARE IN PROGRESS...
+      </div>
+      {/if}
       {/if}
 
       {#if currentPage === 0}

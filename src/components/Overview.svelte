@@ -58,31 +58,35 @@
   }
 </style>
 
-<main>
+<div>
   <div in:fly={{ duration: 400, y: 5 }}>
     {#if experiment}
-    <div style="display: flex; flex-wrap: wrap;">
-      <div style="width: 33%; box-sizing: border-box;"><b>Start Date: </b>{experiment.startDate}</div>
-      <div style="width: 33%; box-sizing: border-box;"><b>End Date: </b>{experiment.endDate}</div>
-      <div style="width: 33%; box-sizing: border-box;"><b>Population: </b>{experiment.population}</div>
+
+    <div class="subtitle1">
+      Summary
     </div>
-    <hr>
-    <p>
-      Retention: <b style="color: red;">UNHEALTHY - 2% drop</b>
-    </p>
-    <p>
-      Search: <b style="color: green;">HEALTHY</b>
-    </p>
-    <p>
-      Ad Clicks: <b style="color: green;">HEALTHY</b>
-    </p>
-    <p>
-      URI Visits: <b style="color: red;">UNHEALTHY - 0.5% drop</b>
-    </p>
-    <p>
-      Active Hours: <b style="color: green;">HEALTHY</b>
-    </p>
+    <div class="row">
+      <div class="row_left">
+        <div class="custom_label">Retention:</div> <b style="color: green;">HEALTHY</b>/<b style="color: red;">UNHEALTHY</b>???
+      </div>
+      <div class="row_right">
+        <div class="custom_label">Search:</div> <b style="color: green;">HEALTHY</b>/<b style="color: red;">UNHEALTHY</b>???
+      </div>
+    </div>
+    <div class="row">
+      <div class="row_left">
+        <div class="custom_label">Ad Clicks:</div> <b style="color: green;">HEALTHY</b>/<b style="color: red;">UNHEALTHY</b>???
+      </div>
+      <div class="row_right">
+        <div class="custom_label">URI Visits:</div> <b style="color: green;">HEALTHY</b>/<b style="color: red;">UNHEALTHY</b>???
+      </div>
+    </div>
+    <div class="row">
+      <div class="row_left">
+        <div class="custom_label">Active Hours:</div> <b style="color: green;">HEALTHY</b>/<b style="color: red;">UNHEALTHY</b>???
+      </div>
+    </div>
     {/if}
   </div>
-</main>
+</div>
 
