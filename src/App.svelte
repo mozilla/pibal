@@ -8,8 +8,8 @@
   import { Box } from "@graph-paper/box";
   import Logo from "./components/Logo.svelte";
   import OneBigGraph from "./components/OneBigGraph.svelte";
-  import Overview from "./components/Overview.svelte";
-  import DetailedInsights from "./components/DetailedInsights.svelte";
+  import Summary from "./components/Summary.svelte";
+  import Results from "./components/Results.svelte";
   import Code from "./components/Code.svelte";
   import { site, plotTemplate } from "../public/config";
 
@@ -24,7 +24,7 @@
   let EXPERIMENTER_API_URL = "https://experimenter.services.mozilla.com/api/v1/experiments"
 
 
-  async function overview(ctx) {
+  async function summary(ctx) {
     currentPlot = null;
     currentPage = 0;
 
@@ -35,7 +35,7 @@
     fullData = await fetch(`data/${source}`).then((r) => r.json()).then((json) => applySplit(json));
   }
 
-  function detailedInsights(obj) {
+  function results(obj) {
     currentPlot = null;
     currentPage = 1;
   }
@@ -81,9 +81,9 @@
     return jsonData;
   }
 
-  page("/:experiment_slug", overview);
-  page("/overview/:experiment_slug", overview);
-  page("/detailed_insights/:experiment_slug", detailedInsights);
+  page("/:experiment_slug", summary);
+  page("/summary/:experiment_slug", summary);
+  page("/results/:experiment_slug", results);
   page({ hashbang: true });
 </script>
 
@@ -157,20 +157,20 @@
           <Button
             level="low"
             toggled={currentPlot == null && currentPage === 0}
-            href="/overview/{currentExperiment.slug}"
+            href="/summary/{currentExperiment.slug}"
             on:click={() => {
               logo.rebuildLogo();
             }}>
-            Overview
+            Summary
           </Button>
           <Button
             level="low"
             toggled={currentPlot == null && currentPage === 1}
-            href="/detailed_insights/{currentExperiment.slug}"
+            href="/results/{currentExperiment.slug}"
             on:click={() => {
               logo.rebuildLogo();
             }}>
-            Detailed Insights
+            Results
           </Button>
         </Stack>
       </Box>
@@ -257,9 +257,9 @@
       {/if}
 
       {#if currentPage === 0}
-      <Overview experiment={currentExperiment}/>
+      <Summary experiment={currentExperiment}/>
       {:else if currentPage === 1}
-      <DetailedInsights data={fullData} plots={plots}/>
+      <Results data={fullData} plots={plots}/>
       {/if}
     </Stack>
   </main>
