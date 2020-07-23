@@ -17,9 +17,6 @@
         break;
       }
     }
-
-    console.log(experiment);
-
     return {
       "startDate": (new Date(experiment.start_date)).toDateString(),
       "endDate": (new Date(experiment.end_date)).toDateString(),

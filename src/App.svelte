@@ -15,10 +15,8 @@
 
   let logo;
   let fullData;
-  let currentData;
   let currentPlot;
   let currentExperiment;
-  let experimentMetadata = {};
   let currentPage = 0;
   let plots = [];
   let isNav = false;
@@ -26,14 +24,15 @@
   let EXPERIMENTER_API_URL = "https://experimenter.services.mozilla.com/api/v1/experiments"
 
 
-  function handleSelectedExperiment(selectedExperiment) {
-    currentExperiment = selectedExperiment.target.value;
-    console.log("curr ", currentExperiment);
-  }
-
-  function overview(obj) {
+  async function overview(ctx) {
     currentPlot = null;
     currentPage = 0;
+
+    currentExperiment = await fetchExperimentData(ctx.params.experiment_slug);
+
+    let normandy_slug = currentExperiment.normandy_slug.replace(/-/g, '_');;
+    let source = `statistics_${normandy_slug}_daily.json`;
+    fullData = await fetch(`data/${source}`).then((r) => r.json()).then((json) => applySplit(json));
   }
 
   function detailedInsights(obj) {
@@ -41,15 +40,10 @@
     currentPage = 1;
   }
 
-  async function fetchExperimentList() {
-    let experimentURL = `${EXPERIMENTER_API_URL}/`;
-    let experimentData = await fetch(experimentURL).then((r) => r.json());
-
-    experimentData = experimentData.filter(experiment => {
-      return experiment.status === "Live";
-    });
-    for (let experiment of experimentData) {
-      experimentMetadata[experiment.slug] = {
+  async function fetchExperimentData(slug) {
+    let experimentURL = `${EXPERIMENTER_API_URL}/${slug}`;
+    let experiment = await fetch(experimentURL).then((r) => r.json());
+    return {
         "name": experiment.name,
         "slug": experiment.slug,
         "normandy_slug": experiment.normandy_slug,
@@ -58,20 +52,6 @@
         "endDate": (new Date(experiment.end_date)).toDateString(),
         "population": experiment.population
       };
-    }
-    let experimentList = Object.keys(experimentMetadata).sort();
-    currentExperiment = experimentList[0];
-    return experimentList;
-  }
-
-  async function initData() {
-    let source = "statistics_bug_1635687_pref_telemetry_calibration_experiment_release_76_78_weekly.json";
-    fullData = await fetch(`data/${source}`).then((r) => r.json()).then((json) => applySplit(json));
-
-    page("/", overview);
-    page("/overview", overview);
-    page("/detailed_insights", detailedInsights);
-    page({ hashbang: true });
   }
 
   async function applySplit(jsonData) {
@@ -99,6 +79,11 @@
     currentPlot = plots[0];
     return jsonData;
   }
+
+  page("/:experiment_slug", overview);
+  page("/overview/:experiment_slug", overview);
+  page("/detailed_insights/:experiment_slug", detailedInsights);
+  page({ hashbang: true });
 </script>
 
 <style>
@@ -118,8 +103,7 @@
 <svelte:head>
   <title>{site.title || 'One Big Graph'}</title>
 </svelte:head>
-
-  {#await initData() then currentData}
+  {#if currentExperiment}
   <nav
     on:mouseover={() => {
       isNav = true;
@@ -138,7 +122,7 @@
           <Button
             level="low"
             toggled={currentPlot == null && currentPage === 0}
-            href="/overview"
+            href="/overview/{currentExperiment.slug}"
             on:click={() => {
               logo.rebuildLogo();
             }}>
@@ -147,7 +131,7 @@
           <Button
             level="low"
             toggled={currentPlot == null && currentPage === 1}
-            href="/detailed_insights"
+            href="/detailed_insights/{currentExperiment.slug}"
             on:click={() => {
               logo.rebuildLogo();
             }}>
@@ -173,29 +157,18 @@
 
     </div>
   </nav>
-  {/await}
+  {/if}
 
   <main class="body">
     <Stack space={2}>
-      {#await fetchExperimentList() then experimentList}
+      {#if currentExperiment}
       <header>
-        <h1>Experiment Report for "{experimentMetadata[currentExperiment].name}"</h1>
+        <h1>"{currentExperiment.name}" Analysis Report</h1>
       </header>
-
-      <form>
-        <label><b>Experiment Slug:</b></label>
-        <select on:change="{handleSelectedExperiment}">
-          {#each experimentList as experiment}
-            <option value={experiment}>
-              {experiment}
-            </option>
-          {/each}
-        </select>
-      </form>
-      {/await}
+      {/if}
 
       {#if currentPage === 0}
-      <Overview experiment={experimentMetadata[currentExperiment]}/>
+      <Overview experiment={currentExperiment}/>
       {:else if currentPage === 1}
       <DetailedInsights data={fullData} plots={plots}/>
       {/if}

@@ -18,7 +18,7 @@
   function updateData() {
     let newData = data.filter(row => {
       return row[plotTemplate["plotSplit"]] === currentPlot["relevantRows"] &&
-        !row["comparison_to_control"] &&
+        !row["comparison_to_branch"] &&
         (row["parameter"] === "0.9" || !("parameter" in row));
     });
     newData.sort((a, b) => (a.window_index > b.window_index) ? 1 : -1)
