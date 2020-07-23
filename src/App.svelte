@@ -15,7 +15,6 @@
 
   let logo;
   let fullData;
-  let currentPlot;
   let currentExperiment;
   let currentPage = 0;
   let plots = [];
@@ -25,9 +24,7 @@
 
 
   async function summary(ctx) {
-    currentPlot = null;
     currentPage = 0;
-
     currentExperiment = await fetchExperimentData(ctx.params.experiment_slug);
 
     let normandy_slug = currentExperiment.normandy_slug.replace(/-/g, '_');;
@@ -36,7 +33,6 @@
   }
 
   function results(obj) {
-    currentPlot = null;
     currentPage = 1;
   }
 
@@ -77,7 +73,6 @@
 
       plotSplitSet.add(statistic);
     });
-    currentPlot = plots[0];
     return jsonData;
   }
 
@@ -156,7 +151,7 @@
         <Stack space={1}>
           <Button
             level="low"
-            toggled={currentPlot == null && currentPage === 0}
+            toggled={currentPage === 0}
             href="/summary/{currentExperiment.slug}"
             on:click={() => {
               logo.rebuildLogo();
@@ -165,7 +160,7 @@
           </Button>
           <Button
             level="low"
-            toggled={currentPlot == null && currentPage === 1}
+            toggled={currentPage === 1}
             href="/results/{currentExperiment.slug}"
             on:click={() => {
               logo.rebuildLogo();
