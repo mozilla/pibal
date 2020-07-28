@@ -45,7 +45,7 @@ nav > div > :last-child {
 }
 
 main {
-  max-width: 1200px;
+  max-width: 1500px;
   width: 100%;
   /* min-height: 700px; */
   padding-top: var(--space-8x);

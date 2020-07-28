@@ -7,11 +7,9 @@
   export let dailyData;
   export let weeklyData;
 
-  let currentStatistic;
-
   let graphs = [
     {label: "Retention", value: [[["binomial", "retained", "daily"], ["binomial", "retained", "weekly"]]]},
-    {label: "Search", value: [[["deciles", "search_count", "weekly"]]]},
+    {label: "Search", value: [[["mean", "search_count", "weekly"]]]},
     {label: "Engagement", value: [
       [["mean", "active_hours", "weekly"], ["mean", "uri_count", "weekly"]],
       [["mean", "ad_clicks", "weekly"]]

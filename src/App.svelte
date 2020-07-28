@@ -14,7 +14,7 @@
   import { site, plotTemplate } from "../public/config";
 
   let logo;
-  let weeklyData, dailyData;
+  let weeklyData, dailyData, studyLength;
   let currentExperiment;
   let currentPage = 0;
   let plots = [];
@@ -44,13 +44,20 @@
   async function fetchExperimentData(slug) {
     let experimentURL = `${EXPERIMENTER_API_URL}/${slug}`;
     let experiment = await fetch(experimentURL).then((r) => r.json());
+
+    let startDate = new Date(experiment.start_date);
+    let endDate = new Date(experiment.end_date)
+    studyLength = Math.floor(
+      (((endDate - startDate) / 1000 / 60 / 60 / 24)
+        - experiment.proposed_enrollment) / 7
+    );
     return {
         "name": experiment.name,
         "slug": experiment.slug,
         "normandy_slug": experiment.normandy_slug,
         "status": experiment.status,
-        "startDate": (new Date(experiment.start_date)).toDateString(),
-        "endDate": (new Date(experiment.end_date)).toDateString(),
+        "startDate": startDate.toDateString(),
+        "endDate": endDate.toDateString(),
         "population": experiment.population,
         "enrollmentPeriod": experiment.proposed_enrollment
       };
@@ -257,9 +264,9 @@
       {/if}
 
       {#if currentPage === 0}
-      <Summary experiment={currentExperiment}/>
+      <Summary weeklyData={weeklyData} studyLength={studyLength}/>
       {:else if currentPage === 1}
-      <Results dailyData={dailyData} weeklyData={weeklyData} plots={plots}/>
+      <Results dailyData={dailyData} weeklyData={weeklyData}/>
       {/if}
     </Stack>
   </main>
