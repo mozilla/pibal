@@ -3,38 +3,60 @@
   import { fly } from "svelte/transition";
   import { Stack } from "@graph-paper/stack";
   import OneBigGraph from "./OneBigGraph.svelte";
-  import { plotTemplate } from "../../public/config";
 
-  export let data;
-  export let plots;
+  export let dailyData;
+  export let weeklyData;
 
   let currentStatistic;
 
-  function setPlot(key) {
-    const nextPlot = plots.find((plot) => plot.key === key);
-    if (nextPlot) currentPlot = nextPlot;
-  }
+  let graphs = [
+    {label: "Retention", value: [[["binomial", "retained", "daily"], ["binomial", "retained", "weekly"]]]},
+    {label: "Search", value: [[["deciles", "search_count", "weekly"]]]},
+    {label: "Engagement", value: [
+      [["mean", "active_hours", "weekly"], ["mean", "uri_count", "weekly"]],
+      [["mean", "ad_clicks", "weekly"]]
+    ]}
+  ];
 
-  function updateData() {
-    let newData = data.filter(row => {
-      return row[plotTemplate["plotSplit"]] === currentPlot["relevantRows"] &&
+  const plotTemplate = {
+    type: "line", // the type of chart. Right now just line.
+    subtitle: "These graphs show the statistic '<statistic>' for a variety of metrics listed below over day index of an experiment", // the subtitle element
+    description: "more description!", // currently unused.
+    x: "window_index", // the column that gives you the x accessor.
+    y: ["point"], // the y value column name. Unlike x, it can be multiple. If you want only one, wrap a single string in an arrray
+    xType: "linear",
+    group: "branch",
+    yAxisFormat: ".0%",
+    yMouseoverFormat: ".2%"
+  };
+
+  function getDataByType(statistic, metric, analysisWindow) {
+    let fullData;
+    if (analysisWindow === "daily") {
+      fullData = dailyData;
+    } else {
+      fullData = weeklyData;
+    }
+    let retentionData = fullData.filter(row => {
+      return row["metric"] === metric &&
+        row["statistic"] === statistic &&
         !row["comparison_to_branch"] &&
         (row["parameter"] === "0.9" || !("parameter" in row));
     });
-    newData.sort((a, b) => (a.window_index > b.window_index) ? 1 : -1)
-    return newData;
+    retentionData.sort((a, b) => (a.window_index > b.window_index) ? 1 : -1)
+    return retentionData;
   }
 
-  function handleSelectedStatistic(selectedStatistic) {
-    currentStatistic = selectedStatistic.target.value;
-    setPlot(currentStatistic);
-    currentData = updateData();
+  function getPlotByData(statistic, metric, analysisWindow) {
+    let title = `${metric.replace(/_/g, " ")} by ${analysisWindow} index`;
+    let plot = Object.assign({}, plotTemplate);
+    plot["title"] = title;
+
+    if (metric !== "retained") {
+      plot["yAxisFormat"] = plot["yMouseoverFormat"] = ".3s"
+    }
+    return plot;
   }
-
-  let statisticList = plots.map((plot) => plot.key);
-  let currentPlot = plots[0];
-  let currentData = updateData();
-
 </script>
 
 <style>
@@ -76,20 +98,24 @@
 </style>
 
 <div class="body">
+  <div class="subtitle1">
+    Results
+  </div>
   <Stack space={2}>
-    <div in:fly={{ duration: 400, y: 5 }}>
-      <form>
-      <label><b>Statistic:</b></label>
-        <select on:change="{handleSelectedStatistic}">
-          {#each statisticList as statistic}
-            <option value={statistic}>
-              {statistic}
-            </option>
-          {/each}
-        </select>
-      </form>
-    </div>
-
-    <OneBigGraph data={currentData} plot={currentPlot} />
+    {#each graphs as graph}
+      <div class="subtitle2 indent">Browser {graph.label}</div>
+      {#each graph.value as row}
+        <div class="row">
+          <div class="row_left">
+            <OneBigGraph data={getDataByType(...row[0])} plot={getPlotByData(...row[0])} />
+          </div>
+           {#if row.length > 1}
+          <div class="row_right">
+            <OneBigGraph data={getDataByType(...row[1])} plot={getPlotByData(...row[1])} />
+          </div>
+          {/if}
+        </div>
+      {/each}
+    {/each}
   </Stack>
 </div>

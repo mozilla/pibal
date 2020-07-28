@@ -19,19 +19,6 @@ body {
   align-content: start;
 }
 
-header h1 a {
-  color: white;
-  text-decoration: none;
-  padding: var(--vpad) var(--hpad);
-  font-size: var(--text-06);
-  display: grid;
-  grid-auto-flow: column;
-  align-items: center;
-  justify-content: start;
-  grid-column-gap: var(--space-1x);
-  font-weight: 400;
-}
-
 nav {
   padding-top: var(--space-6x);
   align-self: stretch;
@@ -122,10 +109,18 @@ h6 {
 }
 
 .subtitle1 {
+  height: 40px;
+
+  font-size: 40px;
+  line-height: 28px;
+  padding: 25px;
+}
+
+.subtitle2 {
   width: 837px;
   height: 32px;
 
-  font-size: 24px;
+  font-size: 32px;
   line-height: 28px;
   padding: 25px;
 }
@@ -137,6 +132,7 @@ h6 {
 
 .label_large, .text_large {
   font-size: 18px;
+  text-transform: capitalize;
 }
 
 .row {
@@ -150,4 +146,8 @@ h6 {
 .row_left, .row_right {
   width: 50%;
   display: inherit;
+}
+
+.indent {
+  padding-left: 25px;
 }

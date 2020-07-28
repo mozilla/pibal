@@ -65,7 +65,7 @@
     return mouseovers;
   }
   let width;
-  let height = 360;
+  let height = 225;
   let right = 240;
   let left = 80;
   let top = 18;
@@ -114,6 +114,7 @@
     flex-wrap: wrap;
     grid-gap: var(--space-3x);
     padding-bottom: var(--space-4x);
+    height: 200px;
   }
 
   h2 {
@@ -126,6 +127,7 @@
 
 <div in:fly={{ duration: 400, y: 5 }}>
   {#if data.length}
+    <div class="label_large indent">{config.title}</div>
     <div class="charts" class:faceted={config.facet !== undefined}>
       {#each groupBy(config.facet, data) as [facet, facetData]}
         <div>
@@ -230,6 +232,7 @@
               </Window1D>
             </g>
           </DataGraphic>
+
         </div>
       {/each}
     </div>

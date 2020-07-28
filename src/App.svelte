@@ -14,7 +14,7 @@
   import { site, plotTemplate } from "../public/config";
 
   let logo;
-  let fullData;
+  let weeklyData, dailyData;
   let currentExperiment;
   let currentPage = 0;
   let plots = [];
@@ -22,14 +22,19 @@
 
   let EXPERIMENTER_API_URL = "https://experimenter.services.mozilla.com/api/v1/experiments"
 
+  async function fetchDataByType(normandySlug, type) {
+    let source = `statistics_${normandySlug}_${type}.json`;
+    let data = await fetch(`data/${source}`).then((r) => r.json()).then((json) => applySplit(json));
+    return data;
+  }
 
   async function summary(ctx) {
     currentPage = 0;
     currentExperiment = await fetchExperimentData(ctx.params.experiment_slug);
 
-    let normandy_slug = currentExperiment.normandy_slug.replace(/-/g, '_');;
-    let source = `statistics_${normandy_slug}_daily.json`;
-    fullData = await fetch(`data/${source}`).then((r) => r.json()).then((json) => applySplit(json));
+    let normandySlug = currentExperiment.normandy_slug.replace(/-/g, '_');;
+    dailyData = await fetchDataByType(normandySlug, "daily");
+    weeklyData = await fetchDataByType(normandySlug, "weekly");
   }
 
   function results(obj) {
@@ -131,7 +136,7 @@
 </style>
 
 <svelte:head>
-  <title>{site.title || 'One Big Graph'}</title>
+  <title>{site.title}</title>
 </svelte:head>
   {#if currentExperiment}
   <nav
@@ -254,7 +259,7 @@
       {#if currentPage === 0}
       <Summary experiment={currentExperiment}/>
       {:else if currentPage === 1}
-      <Results data={fullData} plots={plots}/>
+      <Results dailyData={dailyData} weeklyData={weeklyData} plots={plots}/>
       {/if}
     </Stack>
   </main>
