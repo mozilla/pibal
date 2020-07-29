@@ -75,7 +75,7 @@
   let yMax = config.yMax !== undefined ? config.yMax : Math.max(...ys);
 
   if (config.facet) {
-    width = 350;
+    width = 300;
     height = 200;
     right = 8;
   }
@@ -110,11 +110,9 @@
   }
 
   .charts {
-    display: flex;
     flex-wrap: wrap;
     grid-gap: var(--space-3x);
     padding-bottom: var(--space-4x);
-    height: 200px;
   }
 
   h2 {

@@ -78,9 +78,10 @@
     padding-top: 60px;
     padding-bottom: 10px;
     padding-right: 10px;
+    width: 1400px;
   }
   .grid-item {
-    padding: 35px;
+    padding: 30px;
     font-size: 20px;
     text-align: center;
   }
@@ -134,7 +135,7 @@
   }
 </style>
 
-<div>
+<div class="body">
   <div in:fly={{ duration: 400, y: 5 }}>
     <div class="subtitle1">
       Summary

@@ -140,6 +140,20 @@
     font-weight: bold;
     font-style: oblique;
   }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding-bottom: 10px;
+    padding-right: 10px;
+    width: 1400px;
+  }
+  .grid-item {
+    padding: 5px;
+    padding-left: 30px;
+    font-size: 20px;
+    text-align: left;
+  }
 </style>
 
 <svelte:head>
@@ -213,27 +227,23 @@
           Overview
         </div>
         <div>
-          <div class="row">
-            <div class="row_left">
-              <div class="custom_label">Status:</div>{currentExperiment.status}
+          <div class="grid-container">
+            <div class="grid-item">
+              <div class="custom_label">Status:</div><span>{currentExperiment.status}</span>
             </div>
-            <div class="row_right">
-              <div class="custom_label">Start Date:</div>{currentExperiment.startDate}
-            </div>
-          </div>
-          <div class="row">
-            <div class="row_left">
-              <div class="custom_label">Enrollment Period:</div>{currentExperiment.enrollmentPeriod} days
-            </div>
-            <div class="row_right">
-              <div class="custom_label">End Date:</div>{currentExperiment.endDate}
-            </div>
-          </div>
-          <div class="row">
-            <div class="row_left">
+            <div class="grid-item">
               <div class="custom_label">Population:</div>{currentExperiment.population}
             </div>
-            <div class="row_right">
+            <div class="grid-item">
+              <div class="custom_label">Enrollment Period:</div>{currentExperiment.enrollmentPeriod} days
+            </div>
+            <div class="grid-item">
+              <div class="custom_label">Start Date:</div>{currentExperiment.startDate}
+            </div>
+            <div class="grid-item">
+              <div class="custom_label">End Date:</div>{currentExperiment.endDate}
+            </div>
+            <div class="grid-item">
               <div class="custom_label">Enrollment Health:</div>???
             </div>
           </div>

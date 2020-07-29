@@ -9,6 +9,8 @@
 
 body {
   color: #333;
+  width: 1300px;
+  max-width: 1300px;
   margin: 0;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -45,18 +47,16 @@ nav > div > :last-child {
 }
 
 main {
-  max-width: 1500px;
-  width: 100%;
+  width: 1500px;
   /* min-height: 700px; */
   padding-top: var(--space-8x);
   padding-bottom: var(--space-8x);
   padding-bottom: var(--space-12x);
+  display: inline;
 }
 
-@media (max-width: 1400px) {
-  main {
-    width: 100%;
-  }
+.gp-stack {
+  display: inline;
 }
 
 input,
@@ -128,6 +128,7 @@ h6 {
 .custom_label, .label_large {
   font-weight: bold;
   padding-right: 5px;
+  float: left;
 }
 
 .label_large, .text_large {
@@ -137,7 +138,6 @@ h6 {
 
 .row {
   height: 100%;
-  width: 100%;
   display: flex;
   padding-left: 25px;
   padding-bottom: 25px;
@@ -145,7 +145,6 @@ h6 {
 
 .row_left, .row_right {
   width: 50%;
-  display: inherit;
 }
 
 .indent {
