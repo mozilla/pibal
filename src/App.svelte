@@ -28,17 +28,22 @@
     return data;
   }
 
-  async function summary(ctx) {
-    currentPage = 0;
-    currentExperiment = await fetchExperimentData(ctx.params.experiment_slug);
+  async function fetchData(experimentSlug) {
+    currentExperiment = await fetchExperimentData(experimentSlug);
 
     let normandySlug = currentExperiment.normandy_slug.replace(/-/g, '_');;
     dailyData = await fetchDataByType(normandySlug, "daily");
     weeklyData = await fetchDataByType(normandySlug, "weekly");
   }
 
-  function results(obj) {
+  async function summary(ctx) {
+    currentPage = 0;
+    await fetchData(ctx.params.experiment_slug);
+  }
+
+  async function results(ctx) {
     currentPage = 1;
+    await fetchData(ctx.params.experiment_slug);
   }
 
   async function fetchExperimentData(slug) {

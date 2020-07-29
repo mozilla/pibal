@@ -35,6 +35,9 @@
     } else {
       fullData = weeklyData;
     }
+    if (!fullData) {
+      return;
+    }
     let retentionData = fullData.filter(row => {
       return row["metric"] === metric &&
         row["statistic"] === statistic &&
@@ -99,6 +102,7 @@
   <div class="subtitle1">
     Results
   </div>
+  {#if weeklyData && dailyData}
   <Stack space={2}>
     {#each graphs as graph}
       <div class="subtitle2 indent">Browser {graph.label}</div>
@@ -116,4 +120,5 @@
       {/each}
     {/each}
   </Stack>
+  {/if}
 </div>
